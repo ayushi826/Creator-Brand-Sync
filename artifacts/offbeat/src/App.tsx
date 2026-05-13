@@ -713,8 +713,6 @@ function AnalyzeSection() {
 function StatsBar() {
   const { t } = useLocale();
   const { data: stats, isLoading } = useGetAnalysisStats();
-  const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { once:true, margin:"-60px" });
 
   const items = stats ? [
     { label:t("statsTotal"),   value:stats.totalAnalyses,                           sub:`${stats.recentCount} in last 24h`,   icon:<Users className="w-4 h-4" />,   isNum:true },
@@ -730,8 +728,8 @@ function StatsBar() {
           <span className="w-1 h-4 bg-primary rounded inline-block" style={{ boxShadow:"0 0 8px hsl(var(--primary)/0.8)" }} />
           <h2 className="font-mono font-bold text-sm uppercase tracking-widest">Platform Stats</h2>
         </SectionReveal>
-        <motion.div ref={ref} className="grid grid-cols-2 sm:grid-cols-4 gap-3"
-          variants={stagger(0.08)} initial="hidden" animate={inView&&!isLoading?"visible":"hidden"}>
+        <motion.div className="grid grid-cols-2 sm:grid-cols-4 gap-3"
+          variants={stagger(0.08)} initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }}>
           {isLoading || !items
             ? [...Array(4)].map((_,i) => (
                 <div key={i} className="border border-border rounded-xl bg-card p-5 space-y-2">
@@ -768,8 +766,6 @@ function StatsBar() {
 function RecentAnalyses() {
   const { t } = useLocale();
   const { data: analyses, isLoading } = useListAnalyses();
-  const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { once:true, margin:"-60px" });
 
   return (
     <section className="border-b border-border" data-testid="recent-analyses">
@@ -802,8 +798,8 @@ function RecentAnalyses() {
         )}
 
         {!isLoading && analyses && analyses.length>0 && (
-          <motion.div ref={ref} className="space-y-2"
-            variants={stagger(0.06)} initial="hidden" animate={inView?"visible":"hidden"}>
+          <motion.div className="space-y-2"
+            variants={stagger(0.06)} initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }}>
             {(analyses as AnalysisResult[]).map((a) => {
               const overall = getOverallRating(a.vibeScore, a.brandFitScore);
               const initials = a.handle.replace("@","").slice(0,2).toUpperCase();
