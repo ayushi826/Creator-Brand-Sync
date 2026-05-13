@@ -1,15 +1,16 @@
 openapi: 3.1.0
 info:
-  # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: OFF/BEAT Creator-Brand Sync API
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: analyze
+    description: Creator analysis operations
 paths:
   /healthz:
     get:
@@ -24,6 +25,54 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+  /analyze:
+    post:
+      operationId: analyzeCreator
+      tags: [analyze]
+      summary: Analyze a creator handle
+      description: Runs mock AI analysis on a creator handle and returns vibe match score and badges
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AnalyzeInput"
+      responses:
+        "200":
+          description: Analysis result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AnalysisResult"
+        "400":
+          description: Bad request
+    get:
+      operationId: listAnalyses
+      tags: [analyze]
+      summary: List recent analyses
+      description: Returns the most recent creator analyses
+      responses:
+        "200":
+          description: List of analyses
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AnalysisResult"
+  /analyze/stats:
+    get:
+      operationId: getAnalysisStats
+      tags: [analyze]
+      summary: Get analysis statistics
+      description: Returns aggregated stats about all analyses run
+      responses:
+        "200":
+          description: Statistics
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AnalysisStats"
 components:
   schemas:
     HealthStatus:
@@ -33,4 +82,90 @@ components:
           type: string
       required:
         - status
-
+    AnalyzeInput:
+      type: object
+      required:
+        - handle
+      properties:
+        handle:
+          type: string
+          minLength: 1
+          description: Creator handle (e.g. @username)
+        locale:
+          type: string
+          enum: [global, bharat]
+          description: Locale for analysis context
+    Badge:
+      type: object
+      required:
+        - id
+        - label
+        - tier
+      properties:
+        id:
+          type: string
+        label:
+          type: string
+        tier:
+          type: string
+          enum: [bronze, silver, gold, platinum]
+        description:
+          type: string
+    AnalysisResult:
+      type: object
+      required:
+        - id
+        - handle
+        - vibeScore
+        - brandFitScore
+        - badges
+        - category
+        - createdAt
+      properties:
+        id:
+          type: integer
+        handle:
+          type: string
+        vibeScore:
+          type: integer
+          description: Vibe match score 0-100
+        brandFitScore:
+          type: integer
+          description: Brand fit score 0-100
+        category:
+          type: string
+          description: Creator category (Music, Fashion, Tech, etc.)
+        audienceSize:
+          type: ["string", "null"]
+          description: Estimated audience size label
+        engagementRate:
+          type: ["number", "null"]
+          description: Estimated engagement rate percentage
+        badges:
+          type: array
+          items:
+            $ref: "#/components/schemas/Badge"
+        locale:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+    AnalysisStats:
+      type: object
+      required:
+        - totalAnalyses
+        - avgVibeScore
+        - avgBrandFitScore
+        - topCategory
+        - recentCount
+      properties:
+        totalAnalyses:
+          type: integer
+        avgVibeScore:
+          type: number
+        avgBrandFitScore:
+          type: number
+        topCategory:
+          type: string
+        recentCount:
+          type: integer

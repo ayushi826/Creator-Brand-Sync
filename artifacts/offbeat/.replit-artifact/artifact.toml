@@ -1,0 +1,31 @@
+kind = "web"
+previewPath = "/"
+title = "OFF/BEAT Creator-Brand Sync"
+version = "1.0.0"
+id = "artifacts/offbeat"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 24362
+
+[services.development]
+run = "pnpm --filter @workspace/offbeat run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/offbeat", "run", "build" ]
+publicDir = "artifacts/offbeat/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "24362"
+BASE_PATH = "/"
