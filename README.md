@@ -1,7 +1,7 @@
-# 🚀 OFF/BEAT Creator-Brand Sync
+# 🚀 Creator-Brand Sync
 ### *AI-Powered Discovery for the Next-Gen House of Brands*
 
-This project is a high-performance prototype built from scratch to solve a core challenge for **OFF/BEAT**: intelligently matching modern Indian creators with specific brand identities using AI and cultural data.
+This project is a high-performance prototype built from scratch to solve a core challenge for **Upcoming Brands**: intelligently matching modern Indian creators with specific brand identities using AI and cultural data.
 
 ---
 
